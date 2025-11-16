@@ -1,51 +1,30 @@
 name: Continuous Integration
-
 on:
   push:
     branches: [ "main" ]
   pull_request:
     branches: [ "main" ]
   workflow_dispatch:
-
+  
 permissions: write-all
-
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      # 1️⃣ Récupérer le repo
       - uses: actions/checkout@v3
-
-      # 2️⃣ Installer Python 3.11
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-
-      # 3️⃣ Installer CML
       - uses: iterative/setup-cml@v2
-
-      # 4️⃣ Installer les dépendances
       - name: Install Packages
         run: make install
-
-      # 5️⃣ Formater le code
       - name: Format
         run: make format
-
-      # 6️⃣ Entraîner le modèle
       - name: Train
         run: make train
-
-      # 7️⃣ Évaluer et créer le rapport
       - name: Evaluation
         env:
           REPO_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: make eval
-
-      # 8️⃣ Mettre à jour la branche "update"
       - name: Update Branch
         env:
-          USER_NAME: ${{ secrets.USER_NAME }}
-          USER_EMAIL: ${{ secrets.USER_EMAIL }}
-        run: make update-branch USER_NAME=$USER_NAME USER_EMAIL=$USER_EMAIL
+          NAME: ${{ secrets.USER_NAME }}
+          EMAIL: ${{ secrets.USER_EMAIL }}
+        run: make update-branch USER_NAME=$NAME USER_EMAIL=$EMAIL
