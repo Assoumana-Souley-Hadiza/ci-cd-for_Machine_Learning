@@ -6,3 +6,4 @@ seaborn
 joblib
 gradio
 huggingface_hub
+black
