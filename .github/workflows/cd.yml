@@ -31,4 +31,4 @@ jobs:
       - name: Deploy to Hugging Face Space
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}   # Ton token Hugging Face
-        run: make deploy HF=$HF_TOKEN
+        run: make deploy HF_TOKEN=$HF_TOKEN
