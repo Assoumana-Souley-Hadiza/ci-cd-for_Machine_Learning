@@ -21,16 +21,16 @@ update-branch:
 	git commit -am "Update with new results"
 	git push --force origin HEAD:update
 
-hf-login: 
-	pip install -U "huggingface_hub[cli]"
+hf-login:
+	pip install -U huggingface_hub
 	git pull origin update
 	git switch update
-	python -m huggingface_hub.cli.login --token $(HF_TOKEN) --add-to-git-credential
+	python -m huggingface_hub.login --token $(HF_TOKEN) --add-to-git-credential
 
 push-hub:
-	python -m huggingface_hub.cli.upload Assoumana/breast-cancer-app ./app --repo-type=space --commit-message="Sync App files"
-	python -m huggingface_hub.cli.upload Assoumana/breast-cancer-app ./model --repo-type=space --commit-message="Sync Model"
-	python -m huggingface_hub.cli.upload Assoumana/breast-cancer-app ./results --repo-type=space --commit-message="Sync Results"
+	python -m huggingface_hub.upload_file --repo_id Assoumana/breast-cancer-app --repo_type space --path app --path_in_repo app --commit_message "Sync App files"
+	python -m huggingface_hub.upload_file --repo_id Assoumana/breast-cancer-app --repo_type space --path model --path_in_repo model --commit_message "Sync Model"
+	python -m huggingface_hub.upload_file --repo_id Assoumana/breast-cancer-app --repo_type space --path results --path_in_repo results --commit_message "Sync Results"
 
 deploy: hf-login push-hub
 
