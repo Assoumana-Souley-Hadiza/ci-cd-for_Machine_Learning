@@ -1,0 +1,34 @@
+name: Continuous Deployment
+
+on:
+  workflow_run:
+    workflows: ["Continuous Integration"]  # Nom exact de ton workflow CI
+    types:
+      - completed
+  workflow_dispatch:  # Permet de déclencher manuellement le déploiement
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      # 1️⃣ Checkout du repo
+      - uses: actions/checkout@v3
+
+      # 2️⃣ Installer Python 3.11
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: 3.11
+
+      # 3️⃣ Installer CML si besoin
+      - uses: iterative/setup-cml@v2
+
+      # 4️⃣ Installer les dépendances
+      - name: Install packages
+        run: make install
+
+      # 5️⃣ Déploiement sur Hugging Face
+      - name: Deploy to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}   # Ton token Hugging Face
+        run: make deploy HF=$HF_TOKEN

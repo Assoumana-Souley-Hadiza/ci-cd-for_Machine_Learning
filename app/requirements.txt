@@ -2,3 +2,4 @@ gradio
 scikit-learn
 joblib
 numpy
+black

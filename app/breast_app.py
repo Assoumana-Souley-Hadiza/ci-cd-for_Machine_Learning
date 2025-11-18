@@ -2,11 +2,11 @@ import gradio as gr
 import skops.io as sio
 import numpy as np
 import os
+from sklearn.datasets import load_breast_cancer
 
 # ------------------------------------------------------------
 # Chargement du pipeline Skops
 # ------------------------------------------------------------
-
 model_path = os.path.join("Model", "breast_pipeline.skops")
 
 # Récupérer les types non sûrs (API Skops >= 0.10)
@@ -14,8 +14,6 @@ trusted_types = sio.get_untrusted_types(file=model_path)
 
 # Charger avec la liste des types
 pipeline = sio.load(model_path, trusted=trusted_types)
-
-
 
 # ------------------------------------------------------------
 # Fonction de prédiction
@@ -26,13 +24,19 @@ def predict(*features):
     return "🔴 Malignant" if pred == 0 else "🟢 Benign"
 
 # ------------------------------------------------------------
-# Création des inputs (30 features)
-# Tu peux les renommer si tu veux les vrais noms du dataset
+# Noms réels des caractéristiques
 # ------------------------------------------------------------
-inputs = [
-    gr.Number(label=f"Feature {i+1}", precision=None)  # precision=None pour éviter les warnings
-    for i in range(30)
-]
+dataset = load_breast_cancer()
+feature_names = dataset.feature_names  # tableau de 30 noms
+
+# Création des inputs avec les vrais noms
+inputs = [gr.Number(label=name, precision=None) for name in feature_names]
+
+# ------------------------------------------------------------
+# Exemples réalistes (première ligne du dataset)
+# ------------------------------------------------------------
+example_values = dataset.data[0].tolist()  # première ligne
+examples = [example_values]  # tu peux ajouter d'autres lignes si tu veux
 
 # ------------------------------------------------------------
 # Interface Gradio
@@ -49,11 +53,7 @@ demo = gr.Interface(
         "Modèle : Random Forest."
     ),
     theme=gr.themes.Soft(),
-    examples=[
-        [14.5, 20.5, 90.2, 600.1, 0.12, 0.10, 0.07, 0.06, 0.18, 0.06,
-         0.30, 1.20, 2.40, 25.0, 0.01, 0.02, 0.03, 0.01, 0.02, 0.004,
-         16.2, 28.0, 110.3, 800.2, 0.14, 0.12, 0.10, 0.09, 0.30, 0.08]
-    ],
+    examples=examples,
     article=(
         "<p style='text-align:center; font-size:14px; color:gray;'>"
         "Développé avec ❤️ — Modèle Random Forest, export Skops.<br>"
