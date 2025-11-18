@@ -6,12 +6,16 @@ import os
 # ------------------------------------------------------------
 # Chargement du pipeline Skops
 # ------------------------------------------------------------
+
 model_path = os.path.join("Model", "breast_pipeline.skops")
 
-if not os.path.exists(model_path):
-    raise FileNotFoundError(f"❌ Le fichier modèle est introuvable : {model_path}")
+# Récupérer les types non sûrs (API Skops >= 0.10)
+trusted_types = sio.get_untrusted_types(file=model_path)
 
-pipeline = sio.load(model_path, trusted=True)
+# Charger avec la liste des types
+pipeline = sio.load(model_path, trusted=trusted_types)
+
+
 
 # ------------------------------------------------------------
 # Fonction de prédiction
