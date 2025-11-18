@@ -17,31 +17,31 @@ eval:
 	@cat ./results/metrics.txt >> report.md
 	@echo '\n## Confusion Matrix Plot' >> report.md
 	@echo '![Confusion Matrix](./results/confusion_matrix.png)' >> report.md
-	#@cml comment create report.md
+	# @cml comment create report.md   # Décommenter si CML est utilisé
 
 # === MISE À JOUR DE LA BRANCHE UPDATE ===
 update-branch:
 	git config --global user.name $(USER_NAME)
 	git config --global user.email $(USER_EMAIL)
 	git add model/ results/
-	git commit -m "Update with new results and model" || echo "Rien à commit"
+	git commit -am "Update with new results"
 	git push --force origin HEAD:update
 
 # === LOGIN HUGGING FACE ===
 hf-login:
+	pip install --upgrade huggingface_hub
 	git pull origin update
 	git switch update
-	pip install --upgrade huggingface_hub
-	python -m huggingface_hub login $(HF_TOKEN)
+	huggingface-cli login --token $(HF_TOKEN) --add-to-git-credential
 
 # === DEPOT DES FICHIERS SUR LE SPACE HUGGINGFACE ===
 push-hub:
-	python -c "\
-from huggingface_hub import upload_folder;\
-upload_folder('app', repo_id='Assoumana/breast-cancer-app', path_in_repo='app', repo_type='space', commit_message='Sync App files');\
-upload_folder('model', repo_id='Assoumana/breast-cancer-app', path_in_repo='model', repo_type='space', commit_message='Sync Model');\
-upload_folder('results', repo_id='Assoumana/breast-cancer-app', path_in_repo='results', repo_type='space', commit_message='Sync Results');\
-"
+	huggingface-cli upload Assoumana/breast-cancer-app ./app --repo-type=space --commit-message="Sync App files"
+	huggingface-cli upload Assoumana/breast-cancer-app ./model --repo-type=space --commit-message="Sync Model"
+	huggingface-cli upload Assoumana/breast-cancer-app ./results --repo-type=space --commit-message="Sync Results"
 
 # === PIPELINE COMPLET DE DEPLOIEMENT ===
 deploy: hf-login push-hub
+
+# === PIPELINE TOTALE DU PROJET ===
+all: install format train eval update-branch deploy
