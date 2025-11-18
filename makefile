@@ -14,10 +14,11 @@ train:
 # === GENERATION DU RAPPORT ET COMMENTAIRE CML ===
 eval:
 	@echo "## Model Metrics" > report.md
-	@cat results/classification_report.json >> report.md
+	@cat ./results/metrics.txt >> report.md
 	@echo '\n## Confusion Matrix Plot' >> report.md
 	@echo '![Confusion Matrix](./results/confusion_matrix.png)' >> report.md
 	@cml comment create report.md
+
 
 # === MISE À JOUR DE LA BRANCHE UPDATE ===
 update-branch:

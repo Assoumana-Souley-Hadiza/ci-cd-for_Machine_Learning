@@ -43,6 +43,16 @@ sio.dump(pipe, "model/breast_pipeline.skops")
 y_pred = pipe.predict(X_test)
 report = classification_report(y_test, y_pred, output_dict=True)
 
+from sklearn.metrics import classification_report
+
+# Rapport texte
+report_text = classification_report(y_test, y_pred)
+
+# Sauvegarde en txt
+with open("results/metrics.txt", "w") as f:
+    f.write(report_text)
+
+
 # Sauvegarde du rapport
 with open("results/classification_report.json", "w") as f:
     json.dump(report, f)
