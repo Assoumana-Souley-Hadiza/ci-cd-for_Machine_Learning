@@ -14,19 +14,6 @@ jobs:
       # 1️⃣ Checkout du repo
       - uses: actions/checkout@v3
 
-      # 2️⃣ Installer Python 3.11
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: 3.11
-
-      # 3️⃣ Installer CML si besoin
-      - uses: iterative/setup-cml@v2
-
-      # 4️⃣ Installer les dépendances
-      - name: Install packages
-        run: make install
-
       # 5️⃣ Déploiement sur Hugging Face
       - name: Deploy to Hugging Face Space
         env:
