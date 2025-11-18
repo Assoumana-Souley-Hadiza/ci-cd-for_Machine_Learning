@@ -21,24 +21,18 @@ update-branch:
 	git commit -am "Update with new results"
 	git push --force origin HEAD:update
 
+# === LOGIN HUGGING FACE ===
 hf-login:
 	pip install -U huggingface_hub
 	git pull origin update
 	git switch update
-	huggingface-cli login --token $(HF_TOKEN) --add-to-git-credentiall
+	python -c "from huggingface_hub import login; login(token='$(HF_TOKEN)', add_to_git_credential=True)"
 
+# === DEPOT DES FICHIERS SUR LE SPACE HUGGINGFACE ===
 push-hub:
-	huggingface-cli upload \
-		Assoumana/breast-cancer-app \
-		app --repo-type=space
-
-	huggingface-cli upload \
-		Assoumana/breast-cancer-app \
-		model --repo-type=space
-
-	huggingface-cli upload \
-		Assoumana/breast-cancer-app \
-		results --repo-type=space
+	python -c "from huggingface_hub import upload_folder; upload_folder(repo_id='Assoumana/breast-cancer-app', folder_path='./app', path_in_repo='app', repo_type='space', commit_message='Sync App files')"
+	python -c "from huggingface_hub import upload_folder; upload_folder(repo_id='Assoumana/breast-cancer-app', folder_path='./model', path_in_repo='model', repo_type='space', commit_message='Sync Model')"
+	python -c "from huggingface_hub import upload_folder; upload_folder(repo_id='Assoumana/breast-cancer-app', folder_path='./results', path_in_repo='results', repo_type='space', commit_message='Sync Results')"
 deploy: hf-login push-hub
 
 all: install format train eval update-branch deploy
