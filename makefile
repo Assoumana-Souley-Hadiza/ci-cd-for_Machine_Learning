@@ -30,9 +30,9 @@ update-branch:
 # === LOGIN HUGGING FACE ===
 hf-login:
 	pip install --upgrade huggingface_hub
+	huggingface-cli login --token $(HF_TOKEN) --add-to-git-credential
 	git pull origin update
 	git switch update
-	huggingface-cli login --token $(HF_TOKEN) --add-to-git-credential
 
 # === DEPOT DES FICHIERS SUR LE SPACE HUGGINGFACE ===
 push-hub:
