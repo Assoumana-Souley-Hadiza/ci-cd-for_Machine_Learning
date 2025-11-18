@@ -15,6 +15,7 @@ trusted_types = sio.get_untrusted_types(file=model_path)
 # Charger avec la liste des types
 pipeline = sio.load(model_path, trusted=trusted_types)
 
+
 # ------------------------------------------------------------
 # Fonction de prédiction
 # ------------------------------------------------------------
@@ -22,6 +23,7 @@ def predict(*features):
     X = np.array(features).reshape(1, -1)
     pred = pipeline.predict(X)[0]
     return "🔴 Malignant" if pred == 0 else "🟢 Benign"
+
 
 # ------------------------------------------------------------
 # Noms réels des caractéristiques
@@ -59,7 +61,7 @@ demo = gr.Interface(
         "Développé avec ❤️ — Modèle Random Forest, export Skops.<br>"
         "Projet Master IA."
         "</p>"
-    )
+    ),
 )
 
 # ------------------------------------------------------------

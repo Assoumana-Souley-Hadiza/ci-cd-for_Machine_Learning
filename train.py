@@ -21,17 +21,21 @@ dataset = load_breast_cancer()
 X = dataset.data
 y = dataset.target
 df = pd.DataFrame(X, columns=dataset.feature_names)
-df['target'] = y
+df["target"] = y
 df.to_csv("data/breast_cancer.csv", index=False)
 
 # ✅ Split train/test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.2, random_state=42
+)
 
 # ✅ Créer un pipeline avec StandardScaler + RandomForest
-pipe = Pipeline([
-    ('scaler', StandardScaler()),
-    ('clf', RandomForestClassifier(n_estimators=100, random_state=42))
-])
+pipe = Pipeline(
+    [
+        ("scaler", StandardScaler()),
+        ("clf", RandomForestClassifier(n_estimators=100, random_state=42)),
+    ]
+)
 
 # ✅ Entraînement
 pipe.fit(X_train, y_train)
@@ -59,10 +63,12 @@ with open("results/classification_report.json", "w") as f:
 
 # Matrice de confusion
 cm = confusion_matrix(y_test, y_pred)
-plt.figure(figsize=(6,4))
+plt.figure(figsize=(6, 4))
 sns.heatmap(cm, annot=True, fmt="d", cmap="Blues")
 plt.title("Confusion Matrix")
 plt.savefig("results/confusion_matrix.png")
 plt.close()
 
-print("✅ Entraînement terminé et pipeline sauvegardé dans 'model/breast_pipeline.skops'")
+print(
+    "✅ Entraînement terminé et pipeline sauvegardé dans 'model/breast_pipeline.skops'"
+)
